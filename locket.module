@@ -3,8 +3,8 @@ enabled = true
 hostname = api.revenuecat.com
 
 [rewrite_local]
-# Fix Header
-^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$) url script-request-header https://your.github.io/locket/Locket_Header.js
+# ⚙️ Fix Header để tránh cache, chỉnh sửa request
+^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$) url script-request-header https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/Locket-header.js
 
-# Unlock Gold
-^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$) url script-response-body https://your.github.io/locket/Locket_Gold.js
+# ✨ Unlock Locket Gold + huy hiệu (Premium)
+^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$) url script-response-body https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/Locket.js
