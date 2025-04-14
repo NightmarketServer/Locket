@@ -6,7 +6,7 @@ const mapping = {
 var ua = $request.headers["User-Agent"] || $request.headers["user-agent"];
 var obj = JSON.parse($response.body);
 
-obj.Attention = "🎉 Chúc mừng bạn đã có huy hiệu Gold! Không chia sẻ công khai để tránh bị khóa!";
+obj.Attention = "Chúc mừng bạn! Vui lòng không bán hoặc chia sẻ cho người khác!";
 
 var locket02 = {
   is_sandbox: false,
@@ -31,13 +31,19 @@ var dohungx = {
 const match = Object.keys(mapping).find(e => ua.includes(e));
 
 if (match) {
-  let [s] = mapping[match];
-  dohungx.product_identifier = s;
-  obj.subscriber.subscriptions[s] = locket02;
-  obj.subscriber.entitlements[match] = dohungx;
+  let [e, s] = mapping[match];
+  
+  if (s) {
+    dohungx.product_identifier = s;
+    obj.subscriber.subscriptions[s] = locket02;
+    obj.subscriber.entitlements[s] = dohungx;
+  } else {
+    obj.subscriber.subscriptions["com.locket02.premium.yearly"] = locket02;
+    obj.subscriber.entitlements["Gold"] = dohungx;
+  }
 } else {
   obj.subscriber.subscriptions["com.locket02.premium.yearly"] = locket02;
-  obj.subscriber.entitlements.pro = dohungx;
+  obj.subscriber.entitlements["Gold"] = dohungx;
 }
 
 $done({ body: JSON.stringify(obj) });
