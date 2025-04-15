@@ -1,73 +1,64 @@
 // Author: Locket Gold Unlock - Nightmarket
-var request = $request;
+// Bản đồ định danh User-Agent với entitlement và subscription tương ứng
+const mapping = {
+  '%E8%BD%A6%E7%A5%A8%E7%A5%A8': ['vip+watch_vip'], // App khác (có thể là app tiếng Trung)
+  'Locket': ['Gold'] // App Locket sẽ được gán quyền 'Gold'
+};
 
-// Tạo cấu hình gọi API product_entitlement_mapping của RevenueCat
-const options = {
-    url: "https://api.revenuecat.com/v1/product_entitlement_mapping",
-    headers: {
-        'Authorization': request.headers["authorization"], // Lấy token từ header gốc
-        'X-Platform': 'iOS',
-        'User-Agent': request.headers["user-agent"]
-    }
+// Lấy User-Agent từ header request
+var ua = $request.headers["User-Agent"] || $request.headers["user-agent"];
+
+// Chuyển đổi nội dung phản hồi thành object
+var obj = JSON.parse($response.body);
+
+// Thêm thông điệp cảnh báo
+obj.Attention = "Chúc mừng bạn! Vui lòng không bán hoặc chia sẻ cho người khác!";
+
+// Thông tin gói đăng ký (subscription) giả lập
+var locket02 = {
+  is_sandbox: false,
+  ownership_type: "PURCHASED", // Đã mua
+  billing_issues_detected_at: null,
+  period_type: "normal",
+  expires_date: "2099-12-18T01:04:17Z", // Hết hạn rất xa
+  grace_period_expires_date: null,
+  unsubscribe_detected_at: null,
+  original_purchase_date: "2024-07-28T01:04:18Z",
+  purchase_date: "2024-07-28T01:04:17Z",
+  store: "app_store"
+};
+
+// Thông tin quyền lợi (entitlement) tương ứng với subscription
+var dohungx = {
+  grace_period_expires_date: null,
+  purchase_date: "2024-07-28T01:04:17Z",
+  product_identifier: "com.locket02.premium.yearly", // ID gói mặc định
+  expires_date: "2099-12-18T01:04:17Z"
+};
+
+// Kiểm tra xem User-Agent có khớp với app nào trong bảng mapping không
+const match = Object.keys(mapping).find(e => ua.includes(e));
+
+if (match) {
+  let [e, s] = mapping[match]; // Lấy tên entitlement và ID gói
+
+  if (s) {
+    // Nếu có chỉ định ID gói riêng
+    dohungx.product_identifier = s;
+    obj.subscriber.subscriptions[s] = locket02;
+  } else {
+    // Nếu không có ID riêng thì dùng ID mặc định
+    obj.subscriber.subscriptions["com.locket02.premium.yearly"] = locket02;
+  }
+
+  // Gán entitlement theo tên app
+  obj.subscriber.entitlements[e] = dohungx;
+} else {
+  // Trường hợp không khớp User-Agent nào → gán mặc định
+  obj.subscriber.subscriptions["com.locket02.premium.yearly"] = locket02;
+  obj.subscriber.entitlements.pro = dohungx;
 }
 
-// Gửi request GET tới API của RevenueCat để lấy danh sách entitlement
-$httpClient.get(options, function(error, newResponse, data) {
+// Trả lại kết quả JSON sau khi chỉnh sửa
+$done({ body: JSON.stringify(obj) });
 
-    // Parse dữ liệu trả về từ API
-    const ent = JSON.parse(data);
-
-    // Tạo JSON mẫu để trả về - giả lập user đã mua trọn đời (expires_date năm 9692)
-    let jsonToUpdate = {
-        "request_date_ms": 1704070861000,
-        "request_date": "2024-04-12T01:01:01Z",
-        "subscriber": {
-            "entitlement": {},
-            "first_seen": "2024-04-12T01:01:01Z",
-            "original_application_version": "9692",
-            "last_seen": "2024-04-12T01:01:01Z",
-            "other_purchases": {},
-            "management_url": null,
-            "subscriptions": {},
-            "entitlements": {},
-            "original_purchase_date": "2024-04-12T01:01:01Z",
-            "original_app_user_id": "70B24288-83C4-4035-B001-573285B21AE2",
-            "non_subscriptions": {}
-        }
-    };
-
-    // Duyệt qua từng entitlement lấy được
-    const productEntitlementMapping = ent.product_entitlement_mapping;
-
-    for (const [entitlementId, productInfo] of Object.entries(productEntitlementMapping)) {
-        const productIdentifier = productInfo.product_identifier;
-        const entitlements = productInfo.entitlements;
-
-        for (const entitlement of entitlements) {
-            // Thêm entitlement vào JSON phản hồi
-            jsonToUpdate.subscriber.entitlements[entitlement] = {
-                "purchase_date": "2024-04-12T01:01:01Z",
-                "original_purchase_date": "2024-04-12T01:01:01Z",
-                "expires_date": "9692-01-01T01:01:01Z", // thời hạn vĩnh viễn
-                "is_sandbox": false,
-                "ownership_type": "PURCHASED",
-                "store": "app_store",
-                "product_identifier": productIdentifier
-            };
-
-            // Thêm subscription tương ứng
-            jsonToUpdate.subscriber.subscriptions[productIdentifier] = {
-                "expires_date": "9692-01-01T01:01:01Z",
-                "original_purchase_date": "2024-04-12T01:01:01Z",
-                "purchase_date": "2024-04-12T01:01:01Z",
-                "is_sandbox": false,
-                "ownership_type": "PURCHASED",
-                "store": "app_store"
-            };
-        }
-    }
-
-    // Trả về dữ liệu đã sửa
-    body = JSON.stringify(jsonToUpdate);
-    $done({ body });
-});
