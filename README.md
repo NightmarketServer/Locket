@@ -23,7 +23,13 @@
 - ⚙️ Tích hợp **MITM**, **Rewrite**, **Script** đầy đủ
 
 ---
+## 🧠 Thông tin kỹ thuật
 
+- Tác giả gốc: `@dhungx`
+- **Phân phối lại bởi**: `Nightmarket Server`
+
+ ---
+ 
 📌 **Lưu ý:**  
 - Không hỗ trợ bật huy hiệu  
 - **Để quay video 15s**, làm theo hướng dẫn tại: (https://youtu.be/50OklJ3QBxk?si=Il0SOGHklh9NbIZT)
