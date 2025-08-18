@@ -4,7 +4,7 @@
 # 💬 Discord: https://discord.gg/juY9tw5AJY  
 # 🚀 Released by: Nightmarket Server  
 #!version=1.0.3
-update-url = https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/locket.module
+update-url = https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/locketV3.module
 
 [Script]
 # ～ Egern transfer to Shadowrocket & Surge & LanceX
