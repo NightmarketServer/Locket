@@ -4,14 +4,13 @@
 # 💬 Discord: https://discord.gg/juY9tw5AJY  
 # 🚀 Released by: Nightmarket Server  
 #!version= 5
-update-url = https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/locket-V5.module
+update-url = https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/locketV5.module
 
 [Script]
-# ~ By Dohungx
 # ～ Egern transfer to Shadowrocket & Surge & LanceX
-revenuecat = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/dhungx/modules-shadowrocket/refs/heads/main/js/locket/Locket.js, requires-body=true, max-size=-1, timeout=60
 
-deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/dhungx/modules-shadowrocket/refs/heads/main/js/locket/deleteHeader.js, timeout=60
+revenuecat = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/DungHoang120401/Nobita/refs/heads/main/Scripts/Locket_Gold.js, requires-body=true, max-size=-1, timeout=60
+deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/DungHoang120401/Nobita/refs/heads/main/Scripts/LKG_delete_header.js, timeout=60
 
 [MITM]
 hostname = %APPEND% api.revenuecat.com
