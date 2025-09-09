@@ -11,8 +11,8 @@ user-agent = Locket/1.0.0 (iPhone; iOS 26; Scale/3.00)
 
 # ~ Enhanced for Shadowrocket, Surge, & LanceX
 revenuecat = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.*\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/Locket_fix.js, requires-body=true, max-size=-1, timeout=120
-
 deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.*\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/deleteHeader.js, timeout=120
+forceGold = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/v1\/subscribers\/[^/]+$, script-path=https://raw.githubusercontent.com/YourGitHub/YourRepo/main/forceGold.js, requires-body=true, max-size=-1, timeout=120
 
 [MITM]
 hostname = api.revenuecat.com, raw.githubusercontent.com
