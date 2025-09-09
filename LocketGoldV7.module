@@ -16,6 +16,4 @@ forceGold = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/v1\/sub
 
 [MITM]
 hostname = api.revenuecat.com, raw.githubusercontent.com
-hostname = api.revenuecat.com, raw.githubusercontent.com
-
 # 👤 Author: Xunn
