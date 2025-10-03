@@ -2,7 +2,7 @@
 #!desc=Mở khoá premium cho ứng dụng Locket Widget 
 # 💬 Discord: https://discord.gg/juY9tw5AJY  
 # 🚀 Released by: Nightmarket Server  
-#!version= 6
+#!version= 8
 
 [General]
 user-agent = Locket/1.0.0 (iPhone; iOS 26; Scale/3.00)
@@ -15,4 +15,4 @@ deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.*\/(
 
 [MITM]
 hostname = api.revenuecat.com, raw.githubusercontent.com
-# 👤 Author: Xunn
+# 👤 Author: Nightmarket Server  
