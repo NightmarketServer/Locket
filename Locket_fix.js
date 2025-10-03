@@ -1,71 +1,69 @@
-// Updated Locket_fix.js
-// ========= Đặt ngày tham gia là 2/9/2025 ========= //
-var specificDate = "2025-09-02T00:00:00Z"; // Định dạng ISO 8601
+// ========= nightmarketserver ========= //
+// Đặt ngày tham gia
+var specificDate = "2025-09-02T00:00:00Z"; // ISO 8601
 
-// ========= ID Mapping ========= //
 const mapping = {
   '%E8%BD%A6%E7%A5%A8%E7%A5%A8': ['vip+watch_vip'],
-  'Locket': ['Gold'] // Đảm bảo rằng Locket Gold được sử dụng đúng cách
+  'Locket': ['Gold']
 };
 
-// ========= Kiểm tra và Khởi tạo ========= //
 var ua = $request.headers["User-Agent"] || $request.headers["user-agent"];
 
-// Bắt lỗi khi parsing response
+// Bắt lỗi parse
+var obj = {};
 try {
-  var obj = JSON.parse($response.body);
+  obj = JSON.parse($response.body);
 } catch (e) {
-  console.log("Error parsing response body:", e);
-  $done({}); // Trả kết quả trống nếu lỗi xảy ra
+  console.log("Parse error:", e);
+  $done({});
 }
 
-// Đảm bảo các key cơ bản tồn tại
 if (!obj.subscriber) obj.subscriber = {};
-if (!obj.subscriber.entitlements) obj.subscriber.entitlements = {};
 if (!obj.subscriber.subscriptions) obj.subscriber.subscriptions = {};
+if (!obj.subscriber.entitlements) obj.subscriber.entitlements = {};
 
-// ========= Tạo thông tin gói Locket Gold ========= //
-var xunn = {
+obj.Attention = "Chúc mừng bạn! Vui lòng không bán hoặc chia sẻ cho người khác!";
+
+// ========= Subscription ========= //
+var locket02 = {
   is_sandbox: false,
   ownership_type: "PURCHASED",
   billing_issues_detected_at: null,
   period_type: "normal",
-  expires_date: "2099-12-18T01:04:17Z", // Ngày hết hạn lâu dài
+  expires_date: "2099-12-18T01:04:17Z",
   grace_period_expires_date: null,
   unsubscribe_detected_at: null,
-  original_purchase_date: specificDate,  // Ngày tham gia
-  purchase_date: specificDate,          // Ngày mua
+  original_purchase_date: specificDate, // thay bằng ngày mới
+  purchase_date: specificDate,         // thay bằng ngày mới
   store: "app_store"
 };
 
-var xunn_entitlement = {
+// ========= Entitlement ========= //
+var dohungx = {
   grace_period_expires_date: null,
-  purchase_date: specificDate, // Ngày tham gia
-  product_identifier: "com.xunn.premium.yearly",
-  expires_date: "2099-12-18T01:04:17Z" // Ngày hết hạn lâu dài
+  purchase_date: specificDate, // thay bằng ngày mới
+  product_identifier: "com.locket02.premium.yearly",
+  expires_date: "2099-12-18T01:04:17Z"
 };
 
-// ========= Áp dụng Mapping ========= //
+// ========= Áp dụng mapping ========= //
 const match = Object.keys(mapping).find(e => ua.includes(e));
 
 if (match) {
-  let entitlementKey = mapping[match][0] || "Locket";
-  let subscriptionKey = mapping[match][1] || "com.xunn.premium.yearly";
+  let [e, s] = mapping[match];
 
-  obj.subscriber.subscriptions[subscriptionKey] = xunn;
-  obj.subscriber.entitlements[entitlementKey] = xunn_entitlement;
+  if (s) {
+    dohungx.product_identifier = s;
+    obj.subscriber.subscriptions[s] = locket02;
+  } else {
+    obj.subscriber.subscriptions["com.locket02.premium.yearly"] = locket02;
+  }
+
+  obj.subscriber.entitlements[e] = dohungx;
 } else {
-  // Gán mặc định nếu không có khớp
-  obj.subscriber.subscriptions["com.hoangvanbao.premium.yearly"] = xunn;
-  obj.subscriber.entitlements["Locket"] = xunn_entitlement;
+  obj.subscriber.subscriptions["com.locket02.premium.yearly"] = locket02;
+  obj.subscriber.entitlements.pro = dohungx;
 }
 
-// ========= Thêm thông báo và Log ========= //
-obj.Attention = "Chúc mừng bạn Xunn! Vui lòng không bán hoặc chia sẻ cho người khác!";
-console.log("User-Agent:", ua);
-console.log("Final Modified Response:", JSON.stringify(obj, null, 2));
-
-// ========= Trả kết quả cuối cùng ========= //
+// ========= Trả kết quả ========= //
 $done({ body: JSON.stringify(obj) });
-
-// ========= Xunn ========= //
