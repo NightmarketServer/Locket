@@ -38,7 +38,15 @@ $httpClient.get(options, function (error, newResponse, data) {
         }
     };
 
-    const productEntitlementMapping = ent.product_entitlement_mapping;
+    // === ✅ Fix lỗi product_entitlement_mapping null ===
+    const productEntitlementMapping = ent.product_entitlement_mapping || {};
+    if (!Object.keys(productEntitlementMapping).length) {
+        console.log("⚠️ Không tìm thấy product_entitlement_mapping — dùng fallback mặc định.");
+        productEntitlementMapping["default"] = {
+            product_identifier: "com.ohoang7.premium.yearly",
+            entitlements: ["pro"]
+        };
+    }
 
     for (const [entitlementId, productInfo] of Object.entries(productEntitlementMapping)) {
         const productIdentifier = productInfo.product_identifier;
@@ -70,5 +78,3 @@ $httpClient.get(options, function (error, newResponse, data) {
     body = JSON.stringify(jsonToUpdate);
     $done({ body });
 });
-
-
