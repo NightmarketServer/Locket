@@ -71,9 +71,4 @@ $httpClient.get(options, function (error, newResponse, data) {
     $done({ body });
 });
 
-/*
-  === Ghi chú ===
-  - Tự động lấy danh sách entitlement từ RevenueCat.
-  - Toàn bộ ngày mua/khởi tạo đã chỉnh về 2025-10-20.
-  - Giữ nguyên cấu trúc hoạt động theo @Ohoang7.
-*/
+
