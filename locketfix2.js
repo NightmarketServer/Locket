@@ -17,7 +17,7 @@ var locket02 = {
   grace_period_expires_date: null,
   unsubscribe_detected_at: null,
   original_purchase_date: "2025-11-25T00:00:00Z",
-  purchase_date: "2025-11-25T00:00:00Z",
+  purchase_date: "2027-11-25T00:00:00Z",
   store: "app_store"
 };
 
