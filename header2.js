@@ -1,17 +1,23 @@
 // deleteHeader.js - NightmarketServer
-// Remove headers that might be used by RevenueCat/app server to detect tampering
+// Updated deleteHeader.js
+// ========= Header Modification ========= //
+const version = 'V1.0.3';
 
-var req = $request;
-var headers = req.headers || {};
+function setHeaderValue(e, a, d) {
+  var r = a.toLowerCase();
+  r in e ? e[r] = d : e[a] = d;
+}
 
-// Remove a set of headers that can trigger server-side checks
-delete headers['x-revenuecat-etag'];
-delete headers['x-revenuecat-signature'];
-delete headers['if-none-match'];
-delete headers['if-modified-since'];
-// Optionally remove user-agent if you want to force the UA from the config (uncomment if desired)
-// delete headers['user-agent'];
+// Lấy headers hiện tại từ request
+var modifiedHeaders = $request.headers;
 
-$done({ headers: headers });
+// Thay đổi giá trị của X-RevenueCat-ETag
+setHeaderValue(modifiedHeaders, "X-RevenueCat-ETag", "");
+
+// Debug: In header đã sửa (tuỳ chọn)
+console.log("Modified Headers:", JSON.stringify(modifiedHeaders));
+
+// Kết thúc request với header đã sửa đổi
+$done({ headers: modifiedHeaders });
 // ========= Nightmarket ========= //
 
