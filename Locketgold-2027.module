@@ -2,7 +2,6 @@
 #!desc=Mở khoá premium cho ứng dụng Locket Widget 
 # 💬 Discord: https://discord.gg/juY9tw5AJY  
 # 🚀 Rewrite by: Nightmarket Server  
-# Locket Gold Unlock + hostsVN Ad Blocking
 # Author: William - Thành Long
 
 [General]
@@ -18,11 +17,9 @@ icmp-auto-reply = true
 always-reject-url-rewrite = false
 private-ip-answer = true
 udp-policy-not-supported-behaviour = REJECT
-update-url = https://raw.githubusercontent.com/Long18/shadowrocket/main/Locket.conf
+update-url = https://raw.githubusercontent.com/NightmarketServer/Locket/main/Locket.conf
 
 [Rule]
-# hostsVN - Block ads Vietnamese
-RULE-SET,https://raw.githubusercontent.com/bigdargon/hostsVN/master/option/domain.txt,REJECT
 # Final
 FINAL,PROXY
 
@@ -34,8 +31,8 @@ localhost = 127.0.0.1
 ^https?://(www.)?google.cn https://www.google.com 302
 
 # ~ Enhanced for Shadowrocket, Surge, & LanceX
-revenuecat = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.*\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/locketfix3.js, requires-body=true, max-size=-1, timeout=120
-deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.*\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/NightmarketServer/Locket/refs/heads/main/header2.js, timeout=120
+revenuecat = type=http-response, pattern=^https:\/\/api\.revenuecat\.com\/.*\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/NightmarketServer/Locket/main/locketfix3.js, requires-body=true, max-size=-1, timeout=120
+deleteHeader = type=http-request, pattern=^https:\/\/api\.revenuecat\.com\/.*\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/NightmarketServer/Locket/main/header2.js, timeout=120
 
 [MITM]
 enable = true
