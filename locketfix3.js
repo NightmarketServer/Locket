@@ -1,85 +1,72 @@
 /***********************************************
  > Author:  NightmarketServer
 ***********************************************/
-// == Locket Gold Unlock Script with Badge ==
-// ✅ By NightMarket | Version 1.0.4
+// Updated Locket_fix.js
+// ========= Đặt ngày tham gia là 25/11/2027 ========= //
+var specificDate = "2027-11-25T00:00:00Z"; // Định dạng ISO 8601
 
+// ========= ID Mapping ========= //
 const mapping = {
   '%E8%BD%A6%E7%A5%A8%E7%A5%A8': ['vip+watch_vip'],
-  'Locket': ['Gold']
+  'Locket': ['Gold'] // Đảm bảo rằng Locket Gold được sử dụng đúng cách
 };
 
+// ========= Kiểm tra và Khởi tạo ========= //
 var ua = $request.headers["User-Agent"] || $request.headers["user-agent"];
-var obj = JSON.parse($response.body);
 
-// 🎉 Custom message
-obj.Attention = "Chúc mừng bạn! Vui lòng không bán hoặc chia sẻ cho người khác!";
+// Bắt lỗi khi parsing response
+try {
+  var obj = JSON.parse($response.body);
+} catch (e) {
+  console.log("Error parsing response body:", e);
+  $done({}); // Trả kết quả trống nếu lỗi xảy ra
+}
 
-// 🪙 Subscription block
-var locketSub = {
+// Đảm bảo các key cơ bản tồn tại
+if (!obj.subscriber) obj.subscriber = {};
+if (!obj.subscriber.entitlements) obj.subscriber.entitlements = {};
+if (!obj.subscriber.subscriptions) obj.subscriber.subscriptions = {};
+
+// ========= Tạo thông tin gói Locket Gold ========= //
+var xunn = {
   is_sandbox: false,
   ownership_type: "PURCHASED",
   billing_issues_detected_at: null,
   period_type: "normal",
-  expires_date: "2099-12-18T01:04:17Z",
+  expires_date: "2099-12-18T01:04:17Z", // Ngày hết hạn lâu dài
   grace_period_expires_date: null,
   unsubscribe_detected_at: null,
-  original_purchase_date: "2027-11-25T00:00:00Z",
-  purchase_date: "2027-11-25T00:00:00Z",
+  original_purchase_date: specificDate,  // Ngày tham gia
+  purchase_date: specificDate,          // Ngày mua
   store: "app_store"
 };
 
-// 🪙 Entitlement block
-var locketEnt = {
+var xunn_entitlement = {
   grace_period_expires_date: null,
-  purchase_date: "2027-11-25T00:00:00Z",
-  product_identifier: "com.locket02.premium.yearly",
-  expires_date: "2099-12-18T01:04:17Z"
+  purchase_date: specificDate, // Ngày tham gia
+  product_identifier: "com.xunn.premium.yearly",
+  expires_date: "2099-12-18T01:04:17Z" // Ngày hết hạn lâu dài
 };
 
-// 🏅 Badge entitlement
-var badgeEnt = {
-  product_identifier: "locket_gold_badge",
-  purchase_date: "2027-11-25T00:00:00Z",
-  expires_date: "2099-12-18T01:04:17Z"
-};
-
-// 🧠 Feature flags
-obj.subscriber.features = ["changeAppIcon", "cameraTheme", "goldBadge"];
-
-// 🔁 Mapping logic
+// ========= Áp dụng Mapping ========= //
 const match = Object.keys(mapping).find(e => ua.includes(e));
+
 if (match) {
-  let [entKey, subKey] = mapping[match];
-  if (subKey) {
-    locketEnt.product_identifier = subKey;
-    obj.subscriber.subscriptions[subKey] = locketSub;
-  } else {
-    obj.subscriber.subscriptions["com.locket02.premium.yearly"] = locketSub;
-  }
-  obj.subscriber.entitlements[entKey] = locketEnt;
+  let entitlementKey = mapping[match][0] || "Locket";
+  let subscriptionKey = mapping[match][1] || "com.xunn.premium.yearly";
+
+  obj.subscriber.subscriptions[subscriptionKey] = xunn;
+  obj.subscriber.entitlements[entitlementKey] = xunn_entitlement;
 } else {
-  obj.subscriber.subscriptions["com.locket02.premium.yearly"] = locketSub;
-  obj.subscriber.entitlements["Gold"] = locketEnt;
+  // Gán mặc định nếu không có khớp
+  obj.subscriber.subscriptions["com.hoangvanbao.premium.yearly"] = xunn;
+  obj.subscriber.entitlements["Locket"] = xunn_entitlement;
 }
 
-// 🏅 Inject badge entitlement
-obj.subscriber.subscriptions["locket_gold_badge"] = locketSub;
-obj.subscriber.entitlements["GoldBadge"] = badgeEnt;
+// ========= Thêm thông báo và Log ========= //
+obj.Attention = "Chúc mừng bạn NightmarketServer! Vui lòng không bán hoặc chia sẻ cho người khác!";
+console.log("User-Agent:", ua);
+console.log("Final Modified Response:", JSON.stringify(obj, null, 2));
 
+// ========= Trả kết quả cuối cùng ========= //
 $done({ body: JSON.stringify(obj) });
-
-
-// == Header Cleaner ==
-const version = 'V1.0.4';
-
-function setHeaderValue(e, a, d) {
-  var r = a.toLowerCase();
-  r in e ? e[r] = d : e[a] = d;
-}
-
-var modifiedHeaders = $request.headers;
-setHeaderValue(modifiedHeaders, "X-RevenueCat-ETag", "");
-console.log("Modified Headers:", JSON.stringify(modifiedHeaders));
-$done({ headers: modifiedHeaders });
-});
